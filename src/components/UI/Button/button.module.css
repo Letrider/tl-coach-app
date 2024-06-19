@@ -1,0 +1,29 @@
+.button_block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60%;
+    background-color: #AA77BF;
+    border-radius: 5px;
+
+
+}
+/* .button_block:hover {
+    animation: 3s linear-colors 1s infinite alternate slidein;
+} */
+.register_button {
+    padding: 10px;
+    border: none;
+    width: 100%;
+    color: white;
+    border-radius: 5px;
+}
+
+/* @keyframes linear-colors {
+    0% {
+        background-color: #AA77BF;
+    }
+    100% {
+        background-color: #5e2176;
+    }
+} */

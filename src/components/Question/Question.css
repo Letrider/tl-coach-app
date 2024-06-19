@@ -1,0 +1,66 @@
+.question-container {
+	width: 49%;
+
+	box-sizing: border-box;
+	padding: 30px;
+	background-color: #fff;
+}
+
+.question-container input {
+	font-size: 24px;
+
+	padding: 5px 0 !important;
+
+	border: none;
+	border-bottom: 2px solid #7F598F;
+}
+
+.question-container ul {
+	margin-top: 20px;
+}
+
+.question-container ul li {
+	padding: 10px 0;
+
+}
+
+.question-container ul li label {
+	display: flex;
+	align-items: center;
+	font-size: 18px;
+
+
+}
+
+.question-container ul li .custom-input-check:first-of-type {
+	margin-right: 50px;
+}
+
+.question-container ul li .custom-input-check[type='radio'] {
+	appearance: none;
+	width: 20px;
+	height: 20px;
+	border: 1px solid #7F598F;
+
+	border-radius: 50%;
+	margin-right: 10px;
+	position: relative;
+}
+
+.question-container .custom-input-check[type='radio']:checked::before {
+	content: '';
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+
+	background-color: rgba(127, 89, 143, 0.25);
+	background-image: url('../../../public/images/ikonki/checkmark.svg');
+	background-repeat: no-repeat;
+	background-position: center 3.9px;
+	background-size: 12px 12px;
+
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}

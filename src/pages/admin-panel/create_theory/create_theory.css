@@ -1,0 +1,212 @@
+.create-theory {
+	width: 100%;
+	min-height: 81vh;
+
+
+	background-color: #D2BEDA;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	flex-direction: column;
+}
+
+.create-theory_header {
+	font-size: 36px;
+	color: white;
+
+}
+
+.create-theory_form {
+	width: 100%;
+	height: 50vh;
+
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+
+	gap: 20px;
+}
+
+.create-container {
+	width: 90%;
+	height: 80%;
+
+
+	background: white;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: baseline;
+	box-sizing: border-box;
+
+	padding: 30px;
+
+	gap: 20px;
+
+}
+
+.create-container-first {
+	width: 90%;
+	height: 20%;
+
+
+	background: white;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.create-theory_form:first {
+	width: 10%;
+}
+
+.create-theory-input-number {
+	border: none;
+	border-bottom: 1px solid #7F598F;
+	width: 10%;
+	padding: 10px 0;
+
+
+	margin: 50px 0;
+}
+
+.create-theory-input-number::placeholder {
+	text-align: center;
+	font-size: 24px;
+
+}
+
+.create-theory-input-lesson {
+	font-size: 24px;
+
+	border: none;
+	margin: 20px;
+	border-bottom: 2px solid #7F598F;
+}
+
+.create-theory-input-topic-name {
+	font-size: 18px;
+
+	padding: 5px 0 !important;
+
+	border: none;
+	border-bottom: 2px solid #7F598F;
+}
+
+.create-container-theory_textarea {
+	width: 100%;
+	height: 100%;
+	resize: none;
+
+
+	box-sizing: border-box;
+	border: none;
+
+	transition: all .5s ease;
+
+
+
+}
+
+.create-container-theory_textarea:focus-visible {
+	outline: none;
+	text-align: center;
+	transition: all .5s ease;
+}
+
+
+
+.textarea-container {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+}
+
+.button-image-uploader {
+	width: 32px;
+	height: 32px;
+
+	cursor: pointer;
+	transition: all .5s ease;
+	border: transparent 2px solid;
+	border-radius: 10px;
+
+}
+
+.button-image-uploader:hover {
+	transition: all .5s ease;
+
+	border: #7F598F 2px solid;
+}
+
+.create-theory-submit {
+	padding: 20px 80px;
+
+	font-size: 24px;
+
+	border: transparent 2px solid;
+	transition: all .5s ease;
+	background-color: #7F598F;
+	color: white;
+}
+
+.create-theory-submit:hover {
+	transition: all .5s ease;
+	border: #7F598F 2px solid;
+	color: #7F598F;
+
+	background-color: #fff;
+
+}
+
+
+.modal {
+	background-color: rgba(0, 0, 0, 0.5);
+	width: 100%;
+	height: 100%;
+	color: white;
+	position: fixed;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.modal-content {
+	box-sizing: border-box;
+	padding: 50px;
+	border-radius: 15px;
+	background-color: #D2BEDA;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+
+}
+
+.modal-content input {
+	border: none;
+	padding: 10px 0;
+	color: #7F598F;
+	border-bottom: #7F598F 2px solid;
+}
+
+.modal-content input::placeholder {
+	color: #7F598F;
+}
+
+.modal-content button {
+	width: 100%;
+	height: 100%;
+	border-radius: 5px;
+	background-color: #7F598F;
+	padding: 10px;
+}
+
+.modal-content h2 {
+	font-size: 24px;
+}

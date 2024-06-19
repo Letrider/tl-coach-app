@@ -1,0 +1,37 @@
+.topic-selector {
+	width: 50%;
+	font-size: 24px;
+}
+
+.topic-selector ul {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	margin: 5px;
+}
+
+.topic-selector li {
+	text-align: center;
+	margin: 5px;
+	width: 80%;
+	background-color: rgba(0, 0, 0, 0.08);
+	border-radius: 20px;
+	border: 3px solid #D2BEDA;
+
+	transition: all .3s ease;
+
+	cursor: pointer;
+}
+
+.topic-selector li:hover {
+	transition: all .3s ease;
+	border: 3px solid #D2BEDA;
+	background-color: #D2BEDA;
+	color: white;
+
+}
+
+.activeTopic {
+	background-color: #D2BEDA !important;
+}

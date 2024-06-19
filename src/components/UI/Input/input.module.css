@@ -1,0 +1,32 @@
+
+.label {
+    display: flex;
+    flex-direction: column;
+}
+
+.custom_input {
+    width: 100%;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: 1px solid;
+    border-width: 1px;
+    
+}
+
+.custom_label {
+    font-size: 12px;
+}
+
+
+.emailInput:invalid {
+    border-color: red;
+}
+
+/* Пример стилей для сообщения об ошибке */
+.emailInput:invalid + span::after {
+    content: "Адрес электронной почты должен содержать символ @";
+    color: red;
+    display: block;
+    margin-top: 4px; /* добавляем отступ от поля ввода */
+}

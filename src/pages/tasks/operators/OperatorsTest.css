@@ -1,0 +1,81 @@
+@import url("@/styles/reset.css");
+@import url("@/styles/main.css");
+
+
+.true-and-false {
+    width: 100%;
+    min-height: 82vh;
+  
+    background-color: #D2BEDA;
+  
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  .question-section {
+    width: 100%;
+
+    /* margin: 50px 20px; */
+  
+    background: white;
+  
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .question-count {
+    font-size: 24px;
+    color: #553B5F;
+  }
+  
+  .question-text {
+    font-size: 24px;
+    font-family: "Fraunces";
+    color: #553B5F;
+    margin: 20px 0;
+  }
+  
+  .answer-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    /* flex-direction: column; */
+    align-items: center;
+  }
+  
+  .answer-section button {
+    width: 300px;
+    height: 100px;
+    margin: 10px 0;
+  
+    font-size: 20px;
+  
+    background: #553B5F;
+    color: #fff;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  
+    border: none;
+    cursor: pointer;
+  }
+  
+  .answer-section button:hover {
+    background: #3a2640;
+  }
+
+  .score-section {
+    font-size: 24px;
+    font-weight: 600;
+  }
+  
+  .score-section p {
+    text-align: center;
+  }

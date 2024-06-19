@@ -1,0 +1,19 @@
+.footer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+
+    /* padding: 30px 0px; */
+    height: 10vh;
+}
+
+.footer_text_first {
+    font-size: 12px;
+    font-weight: 600;
+
+}
+.footer_text_second {
+    font-size: 12px;
+    font-weight: 400;
+}
