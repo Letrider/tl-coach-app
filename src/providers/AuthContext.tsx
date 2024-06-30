@@ -1,4 +1,3 @@
-// AuthContext.tsx
 import React, { ReactNode, createContext, useContext, useState } from 'react'
 
 interface AuthContextType {
@@ -29,12 +28,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
         return false
     })
-
-    // useEffect(() => {
-    //     if (isLogged && typeof window !== 'undefined') {
-    //         localStorage.setItem("isLogged", JSON.stringify(isLogged))
-    //     }
-    // }, [isLogged])
 
     return (
         <AuthContext.Provider value={{ isLogged, setIsLogged }}>
