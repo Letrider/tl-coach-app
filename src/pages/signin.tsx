@@ -2,26 +2,27 @@
 import { useAuth } from "@/providers/AuthContext"
 import { useRouter } from "next/router"
 import { ChangeEvent, useEffect, useState } from "react"
-
 import Link from "next/link"
-
 import "@/styles/main.css"
 import "@/styles/reset.css"
-
 import Button from "@/components/UI/Button/button"
 import Input from "@/components/UI/Input/input"
 import axios from 'axios'
 
-
 export default function Login(): React.JSX.Element {
-    const { isLogged, setIsLogged } = useAuth()
+    const { isLogged, login } = useAuth()
     const [email, setEmail] = useState<string>("")
-    const [password, setPassword] = useState("")
+    const [password, setPassword] = useState<string>("")
     const [error, setError] = useState<string>("")
     const router = useRouter()
 
+    useEffect(() => {
+        if (isLogged) {
+            router.push("/dashboard")
+        }
+    }, [isLogged, router])
 
-    const handler = async (e: any) => {
+    const handler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (!email || !password) {
             setError("Введите email и пароль")
@@ -38,29 +39,18 @@ export default function Login(): React.JSX.Element {
             })
 
             if (response.status === 200) {
-                setIsLogged(true)
-                localStorage.setItem("isLogged", JSON.stringify(isLogged))
-                localStorage.setItem("userEmail", email)  // Сохраняем email при успешном входе
-                router.push("/dashboard")
-                setTimeout(() => {
-                    router.reload()
-                })
+                const { token } = response.data
 
+                login(token)
+                router.push("/dashboard")
             } else {
                 throw new Error("Ошибка при авторизации")
             }
-
         } catch (error) {
             console.error(error)
             setError("Неверный email или пароль")
         }
     }
-
-    useEffect(() => {
-        if (isLogged) {
-            localStorage.setItem("isLogged", JSON.stringify(isLogged))
-        }
-    }, [isLogged])
 
     return (
         <div className="page-static">
@@ -72,6 +62,7 @@ export default function Login(): React.JSX.Element {
                             onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                             type="email"
                             value={email}
+                            autoComplete='email'
                             required
                         >Почта</Input>
 
@@ -79,6 +70,7 @@ export default function Login(): React.JSX.Element {
                             onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                             type="password"
                             value={password}
+                            autoComplete='billing new-password'
                             required
                         >Пароль</Input>
                     </div>

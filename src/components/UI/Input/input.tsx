@@ -1,8 +1,8 @@
 import styles from "./input.module.css"
-import { ReactNode }from "react"
+import { InputHTMLAttributes, ReactNode } from "react"
 
 
-interface InputProps {
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     children?: ReactNode
     type?: string
     placeholder?: string
@@ -12,9 +12,10 @@ interface InputProps {
     error?: string
     required?: boolean
     readOnly?: boolean
+
 }
 
-export default function Input({ children, ...props }: InputProps) { 
+export default function Input({ children, ...props }: InputProps) {
     return (
         <label className={styles.label}>
             <span className={styles.custom_label}>{children}</span>

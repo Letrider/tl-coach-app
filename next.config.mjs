@@ -9,12 +9,24 @@ const nextConfig = {
       }
     ]
   },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          {
+            key: "Access-Control-Allow-Credentials",
+            value: "true",
+          },
+          {
+            key: "Access-Control-Allow-Origin",
+            value: "*", // заменить на домен
+          },
+        ],
+      },
+    ]
+  },
 
-  // Дополнительные параметры конфигурации:
-  // 1. Настройка путей для статических ресурсов
-  // 2. Добавление Webpack-плагинов
-  // 3. Конфигурация препроцессоров CSS
-  // и многое другое...
 }
 
 export default nextConfig

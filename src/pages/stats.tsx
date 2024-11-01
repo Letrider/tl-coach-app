@@ -2,51 +2,46 @@ import UserDataUploader from "@/components/UserDataUploader/UserDataUploader"
 import axios from 'axios'
 import { useRouter } from "next/router"
 import React, { useEffect, useState } from "react"
+import { parseCookies } from 'nookies' // Импортируем parseCookies
 
 import "@/styles/main.css"
 import "@/styles/reset.css"
-
 import Link from 'next/link'
+
+interface TaskStatistics {
+    excellent: number
+    good: number
+    satisfactory: number
+    unsatisfactory: number
+}
 
 export default function Stats(): React.JSX.Element {
     const [isLogged, setIsLogged] = useState<boolean>(false)
     const [userEmail, setUserEmail] = useState<string>("")
-    const [taskStatistics, setTaskStatistics] = useState<{
-        excellent: number
-        good: number
-        satisfactory: number
-        unsatisfactory: number
-    } | null>(null)
+    const [taskStatistics, setTaskStatistics] = useState<TaskStatistics | null>(null)
     const router = useRouter()
 
     useEffect(() => {
-        const isLoggedIn = localStorage.getItem("isLogged") === "true"
-        const userEmailIn = localStorage.getItem("userEmail")!
-        setIsLogged(isLoggedIn)
-        setUserEmail(userEmailIn)
+        const cookies = parseCookies() // Получаем куки
+        const token = cookies.token // Получаем токен из куки
+        const email = cookies.userEmail // Получаем email из куки
 
-        if (!isLoggedIn) {
+        if (token) {
+            setIsLogged(true)
+            setUserEmail(email)
+            fetchTaskStatistics(email, token)
+        } else {
             router.push("/signin")
         }
     }, [router])
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                fetchTaskStatistics(userEmail)
-            } catch (error) {
-                console.error("Ошибка при получении ID пользователя:", error)
-            }
-        }
-
-        if (userEmail) {
-            fetchData()
-        }
-    }, [userEmail])
-
-    const fetchTaskStatistics = async (email: string) => {
+    const fetchTaskStatistics = async (email: string, token: string) => {
         try {
-            const response = await axios.get(`/api/getTaskStatistics?email=${email}`)
+            const response = await axios.get(`/api/getTaskStatistics?email=${email}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`, // Передаем токен в заголовках
+                },
+            })
             const taskStats = response.data
             setTaskStatistics(taskStats)
         } catch (error) {
@@ -72,7 +67,6 @@ export default function Stats(): React.JSX.Element {
                                 </div>
                                 <div className="line"></div>
                                 <div className='stats'>
-                                    {/* <div className="diagram"></div> */}
                                     {taskStatistics && (
                                         <span className="test-stats">
                                             Задания, выполненные на &quot;отлично&quot; - {taskStatistics.excellent}%

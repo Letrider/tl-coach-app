@@ -10,24 +10,27 @@
 .navbar ul {
     display: flex;
 }
+
 .navbar ul a {
     padding: 0 10px;
 
     color: #000;
 }
+
 .navbar ul a {
     padding: 0px 20px;
     margin: 5px 0px;
     transition: 0.5s;
 
 }
+
 .navbar ul a:hover {
     transition: 0.5s;
     scale: 1.2;
     padding: 0px 30px;
 }
 
-.logo {
+.navbar-logotype {
     font-family: 'Fraunces', Times, serif;
     font-size: 24px;
     font-weight: 500;

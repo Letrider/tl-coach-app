@@ -1,11 +1,10 @@
 import Link from "next/link"
 import { useState } from "react"
-
 import "@/styles/main.css"
 import "@/styles/reset.css"
-
 import Button from "@/components/UI/Button/button"
 import Input from "@/components/UI/Input/input"
+import { setCookie } from 'nookies'
 
 interface FormState {
     email: string
@@ -35,7 +34,7 @@ export default function Register(): React.JSX.Element {
         password: "",
         telephone: "",
     })
-    
+
     const [formValidations, setFormValidations] = useState({
         isValidPhone: true,
         isValidEmail: true,
@@ -66,7 +65,6 @@ export default function Register(): React.JSX.Element {
     }
 
     const handleChange = (field: string, value: string) => {
-
         setFormData({ ...formData, [field]: value })
 
         switch (field) {
@@ -90,7 +88,7 @@ export default function Register(): React.JSX.Element {
         }
     }
 
-    const handler = (e: React.FormEvent<HTMLFormElement>) => {
+    const handler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
         const isValidData =
@@ -103,108 +101,114 @@ export default function Register(): React.JSX.Element {
             return
         }
 
-        fetch('/api/register', { 
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email: formData.email,
-                login: formData.login,
-                password: formData.password,
-                name: formData.name,
-                lastname: formData.lastname,
-                telephone: formData.telephone,
+        try {
+            const response = await fetch('/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: formData.email,
+                    login: formData.login,
+                    password: formData.password,
+                    name: formData.name,
+                    lastname: formData.lastname,
+                    telephone: formData.telephone,
+                })
             })
-        })
-        .then(response => {
-            if (response.ok) {
-                setRegistrationSuccess(true)
-                return response.json()
-            }
-            throw new Error('Сетевая ошибка при попытке зарегистрироваться')
-        })
-        .then(data => {
-            console.log('Регистрация успешна:', data)
 
-        })
-        .catch((error) => {
+            if (!response.ok) {
+                throw new Error('Сетевая ошибка при попытке зарегистрироваться')
+            }
+
+            const data = await response.json()
+            const { token } = data
+
+            setCookie(null, "token", token, {
+                path: '/',
+                maxAge: 30 * 24 * 60 * 60, // Куки действительны 30 дней
+                secure: true,
+                sameSite: 'lax',
+            })
+
+            console.log('Регистрация успешна:', data)
+            setRegistrationSuccess(true)
+        } catch (error) {
             console.error('Ошибка при регистрации:', error)
-        })      
+        }
     }
 
     return (
         <div className="page-static">
             {
-            registrationSuccess ? 
-                (
-                <form className="form-body">
-                    <div className="success-container">
-                        <div>
-                            <h1>Вы успешно зарегистрировались </h1>
-                            <i className="fas fa-check green"></i>
-                        </div>
-                        <Link href="/signin">Войти в аккаунт</Link>
-                    </div>
-                </form>            
-                ) : (
-                <form className="form-body" onSubmit={handler}>
-                    <div className="form-container">
-                        <div className="form-auth_label">Регистрация</div>
-                        <div className="form-auth_inputs">
-                            <div className="row-content">
-                                <Input
-                                    type="text"
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange("name", e.target.value)}
-                                    value={formData.name}
-                                    required
-                                >Имя</Input>
-
-                                <Input
-                                    type="text"
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange("lastname", e.target.value)}
-                                    value={formData.lastname}
-                                    required
-                                >Фамилия</Input>
+                registrationSuccess ?
+                    (
+                        <form className="form-body">
+                            <div className="success-container">
+                                <div>
+                                    <h1>Вы успешно зарегистрировались</h1>
+                                    <i className="fas fa-check green"></i>
+                                </div>
+                                <Link href="/signin">Войти в аккаунт</Link>
                             </div>
-                            <Input
-                                type="tel"
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange("telephone", e.target.value)}
-                                value={formData.telephone}
-                                error={formErrors.telephone}
-                                required
-                            >Телефон</Input>
+                        </form>
+                    ) : (
+                        <form className="form-body" onSubmit={handler}>
+                            <div className="form-container">
+                                <div className="form-auth_label">Регистрация</div>
+                                <div className="form-auth_inputs">
+                                    <div className="row-content">
+                                        <Input
+                                            type="text"
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange("name", e.target.value)}
+                                            value={formData.name}
+                                            required
+                                        >Имя</Input>
 
-                            <Input
-                                type="text"
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange("login", e.target.value)}
-                                value={formData.login}
-                                error={formErrors.login}
-                                required
-                            >Логин</Input>
+                                        <Input
+                                            type="text"
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange("lastname", e.target.value)}
+                                            value={formData.lastname}
+                                            required
+                                        >Фамилия</Input>
+                                    </div>
+                                    <Input
+                                        type="tel"
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange("telephone", e.target.value)}
+                                        value={formData.telephone}
+                                        error={formErrors.telephone}
+                                        required
+                                    >Телефон</Input>
 
-                            <Input
-                                type="email"
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange("email", e.target.value)}
-                                value={formData.email}
-                                error={formErrors.email}
-                                required
-                            >Почта</Input>
-                            
-                            <Input
-                                type="password"
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange("password", e.target.value)}
-                                value={formData.password}
-                                error={formErrors.password}
-                                required
-                            >Пароль</Input>
-                        </div>
-                        <Button type="submit">Зарегистрироваться</Button>
-                        <h1>Уже есть аккаунт? <Link href="/signin">Войти</Link></h1>
-                    </div>
-                </form>
-            )}
+                                    <Input
+                                        type="text"
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange("login", e.target.value)}
+                                        value={formData.login}
+                                        error={formErrors.login}
+                                        required
+                                    >Логин</Input>
+
+                                    <Input
+                                        type="email"
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange("email", e.target.value)}
+                                        value={formData.email}
+                                        error={formErrors.email}
+                                        required
+                                    >Почта</Input>
+
+                                    <Input
+                                        type="password"
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange("password", e.target.value)}
+                                        value={formData.password}
+                                        error={formErrors.password}
+                                        required
+                                    >Пароль</Input>
+                                </div>
+                                <Button type="submit">Зарегистрироваться</Button>
+                                <h1>Уже есть аккаунт? <Link href="/signin">Войти</Link></h1>
+                            </div>
+                        </form>
+                    )}
         </div>
     )
 }
-
