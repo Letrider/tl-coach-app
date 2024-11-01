@@ -1,48 +1,37 @@
-import { getUserByEmail, updateUserByEmail } from "@/utils/db"
 import { NextApiRequest, NextApiResponse } from 'next'
+import { verify, JwtPayload } from 'jsonwebtoken'
+import { getUserByEmail } from "@/utils/db"
+import cookie from 'cookie'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'GET') {
-        const userEmail = req.query.email as string
+        const cookies = cookie.parse(req.headers.cookie || '')
+        const token = cookies.token
 
-        if (!userEmail) {
-            return res.status(400).json({ error: 'Email пользователя не найден в localStorage' })
+        if (!token) {
+            return res.status(401).json({ error: 'Токен аутентификации не был найден' })
         }
 
         try {
-            const fullName = await getUserByEmail(userEmail) // Передаем email в функцию getUserByEmail
-            if (fullName) {
-                const firstName = fullName.name
-                const lastName = fullName.lastname
-                const telephone = fullName.telephone
+            const decoded = verify(token, process.env.JWT_SECRET as string) as JwtPayload
 
-                res.status(200).json({ firstName, lastName, telephone })
-
+            if (typeof decoded === 'object' && 'userId' in decoded) {
+                const user = await getUserByEmail(decoded.userId)
+                if (user) {
+                    res.status(200).json({ firstName: user.name, lastName: user.lastname, telephone: user.telephone })
+                } else {
+                    res.status(404).json({ error: 'Пользователь не был найден' })
+                }
             } else {
-                res.status(404).json({ error: 'Пользователь не найден' })
+                throw new Error('Невалидный токен')
             }
-        } catch (error) {
-            console.error('Ошибка получения данных о пользователе: ', error)
-            res.status(500).json({ error: 'Ошибка сервера' })
-        }
 
-    } else if (req.method === 'PUT') {
-        // Логика для обновления данных пользователя
-        const { email } = req.query
-        const { firstName, lastName, telephone } = req.body
-        try {
-            const updatedUserData = await updateUserByEmail(email as string, { firstName, lastName, telephone })
-            if (updatedUserData) {
-                res.status(200).json(updatedUserData)
-            } else {
-                res.status(404).json({ error: 'Пользователь не найден' })
-            }
         } catch (error) {
-            console.error('Ошибка при обновлении данных пользователя:', error)
-            res.status(500).json({ message: 'Ошибка при обновлении данных пользователя' })
+            console.error('Ошибка верификации токена:', error)
+            res.status(401).json({ error: 'Невалидный токен' })
         }
     } else {
-        res.setHeader('Allow', ['PUT'])
-        res.status(405).end(`Метод ${req.method} не поддерживается, используйте PUT`)
+        res.setHeader('Allow', ['GET'])
+        res.status(405).end(`Method ${req.method} not allowed`)
     }
 }

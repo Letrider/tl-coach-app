@@ -6,7 +6,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		const { topicid, name, description, videoUrl } = req.body
 		console.log(req.body)
 
-		// Проверка наличия необходимых данных
 		if (!topicid || !name || !description) {
 			return res.status(400).json({ error: 'Все обязательные поля должны быть заполнены' })
 		}

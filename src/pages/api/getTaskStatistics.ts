@@ -5,7 +5,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { email } = req.query
 
     if (email === 'undefined') {
-        return res.status(500).json({ error: "ID undefined"})
+        return res.status(500).json({ error: "ID undefined" })
     }
     if (!email || typeof email !== 'string') {
         return res.status(400).json({ error: "Не указан ID пользователя" })
@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         const tasks = await getUserTasks(email)
         console.log(tasks, "tasks")
-        // Подсчет статистики на основе полученных данных о заданиях
+
         const taskStatistics = {
             excellent: tasks?.filter((task) => task.results === "Отлично").length,
             good: tasks?.filter((task) => task.results === "Хорошо").length,

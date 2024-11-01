@@ -2,14 +2,14 @@ import { Topic } from '@/interfaces/ITopic'
 import { pool } from '@/utils/db'
 
 export async function saveTopicToDatabase(topicData: Topic): Promise<Topic> {
-	const client = await pool.connect();
+	const client = await pool.connect()
 	try {
-	  const { title, description } = topicData;
-	  const query = 'INSERT INTO topics (title, description) VALUES ($1, $2) RETURNING *';
-	  const values = [title, description];
-	  const result = await client.query(query, values);
-	  return result.rows[0];
+		const { title, description } = topicData
+		const query = 'INSERT INTO topics (title, description) VALUES ($1, $2) RETURNING *'
+		const values = [title, description]
+		const result = await client.query(query, values)
+		return result.rows[0]
 	} finally {
-	  client.release();
+		client.release()
 	}
- }
+}

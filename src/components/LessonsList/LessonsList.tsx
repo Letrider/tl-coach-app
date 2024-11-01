@@ -1,4 +1,3 @@
-// components/LessonsList.tsx
 import { Lesson } from '@/interfaces/ILesson'
 
 interface LessonsListProps {

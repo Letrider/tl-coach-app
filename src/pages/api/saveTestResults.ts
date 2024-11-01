@@ -1,20 +1,19 @@
-import { query } from "@/utils/db"; // Подключаем функцию query из вашего файла db.ts
+import { query } from "@/utils/db"
 import { NextApiRequest, NextApiResponse } from "next"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "POST") {
         try {
             const { score, userEmail } = req.body
-				let results = null
-                console.log(req.body, "body")
-				console.log(userEmail, "email SAVETESTRESULTS")
-                
-				if (score <= 1) results = "Неудовлетворительно"
-				if (score <= 3 && score >= 2) results = "Удовлетворительно"
-				if (score <= 5 && score >= 4) results = "Хорошо"
-				if (score === 6) results = "Отлично"
+            let results = null
+            console.log(req.body, "body")
+            console.log(userEmail, "email SAVETESTRESULTS")
 
-            // Здесь выполняем запрос к базе данных для сохранения результатов теста
+            if (score <= 1) results = "Неудовлетворительно"
+            if (score <= 3 && score >= 2) results = "Удовлетворительно"
+            if (score <= 5 && score >= 4) results = "Хорошо"
+            if (score === 6) results = "Отлично"
+
             const insertQuery = `
                 INSERT INTO tasks (name, description, deadline, created_at, updated_at, email, results)
                 VALUES ($1, $2, $3, NOW(), NOW(), $4, $5)
@@ -27,6 +26,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             res.status(500).json({ message: 'Ошибка при сохранении результатов теста' })
         }
     } else {
-        res.status(405).end() // Метод не поддерживается
+        res.status(405).end()
     }
 }
