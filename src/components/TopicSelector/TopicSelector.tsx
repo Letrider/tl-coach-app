@@ -1,16 +1,16 @@
 import topics from '@/constants/data'
-import { Topic } from '@/interfaces/ITopic'
+import { ITopic } from '@/interfaces/ITopic'
 import { useState } from 'react'
 import './TopicSelector.css'
 
 interface TopicSelectorProps {
-	onSelect: (topic: Topic) => void
+	onSelect: (topic: ITopic) => void
 }
 
 export default function TopicSelector({ onSelect }: TopicSelectorProps) {
 	const [activeTopicId, setActiveTopicId] = useState<number | null>(null)
 
-	const handleClick = (topic: Topic) => {
+	const handleClick = (topic: ITopic) => {
 		setActiveTopicId(topic.id)
 		onSelect(topic)
 	}

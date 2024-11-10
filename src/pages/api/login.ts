@@ -11,30 +11,36 @@ export default async function loginHandler(req: NextApiRequest, res: NextApiResp
     return res.status(HttpStatus.MethodNotAllowed).json({ message: 'Разрешен только POST запрос!' })
   }
 
+  if (!email || !password) {
+    return res.status(HttpStatus.BadRequest).json({ message: 'Пожалуйста, укажите email и пароль' })
+  }
+
   try {
     const { rows } = await query('SELECT * FROM users WHERE email = $1', [email])
 
     if (rows.length === 0) {
-      return res.status(HttpStatus.Unauthorized).json({ message: 'Пользователь не был найден' })
+      return res.status(HttpStatus.Unauthorized).json({ message: 'Пользователь не найден' })
     }
 
     const user = rows[0]
+
     const isMatch = await bcrypt.compare(password, user.password)
 
     if (!isMatch) {
-      return res.status(HttpStatus.Unauthorized).json({ message: 'Invalid credentials' })
+      return res.status(HttpStatus.Unauthorized).json({ message: 'Неверные учетные данные' })
     }
 
     const secret = process.env.JWT_SECRET as string
-    if (!secret) throw new Error("[LH] Токен не был найден")
+    if (!secret) throw new Error("JWT секрет не найден в переменных окружения")
 
-    const token = sign({ userId: user.id }, secret, { expiresIn: '1h' })
+    const token = sign({ userId: user.id }, secret)
 
-    res.setHeader('Set-Cookie', `token=${token}; HttpOnly; Path=/; Max-Age=3600; Secure; SameSite=Strict`)
-    return res.status(HttpStatus.Success).json({ message: 'Login successful' })
+    res.setHeader('Set-Cookie', `token=${token}; Path=/;`)
+
+    return res.status(HttpStatus.Success).json({ message: 'Авторизация успешна', token })
 
   } catch (error) {
-    console.error(error)
-    return res.status(HttpStatus.InternalServerError).json({ message: 'An error occurred' })
+    console.error("Ошибка на сервере:", error)
+    return res.status(HttpStatus.InternalServerError).json({ message: 'Произошла ошибка на сервере' })
   }
 }

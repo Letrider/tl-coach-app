@@ -1,5 +1,8 @@
 import { ReactNode, createContext, useContext, useState, useEffect } from 'react'
-import { parseCookies, setCookie, destroyCookie } from 'nookies'
+import jsCookie from 'js-cookie'
+import {
+    COOKIE_MAX_AGE
+} from '@/constants/basic'
 
 interface AuthContextType {
     isLogged: boolean
@@ -10,43 +13,37 @@ interface AuthContextType {
 
 interface AuthProviderProps {
     children: ReactNode
+    initialIsLogged?: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function useAuth() {
     const context = useContext(AuthContext)
+
     if (!context) {
-        throw new Error('useAuth must be used within an AuthProvider')
+        throw new Error('useAuth должен использоваться внутри AuthProvider')
     }
+
     return context
 }
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-    const [isLogged, setIsLogged] = useState<boolean>(false)
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children, initialIsLogged = false }) => {
+    const [isLogged, setIsLogged] = useState<boolean>(initialIsLogged)
 
-    useEffect(() => {
-        const cookies = parseCookies()
-        const token = cookies.token
-        setIsLogged(!!token)
-    }, [])
-
-    // Функция для входа пользователя
-    const login = (token: string) => {
-        setCookie(null, 'token', token, {
-            path: '/',
-            maxAge: 30 * 24 * 60 * 60, // куки действует 30 дней с момента получения
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-        })
+    const login = () => {
         setIsLogged(true)
     }
 
-    // Функция для выхода пользователя
     const logout = () => {
+        jsCookie.remove('token')
         setIsLogged(false)
-        destroyCookie(null, 'token', { path: '/' })
     }
+
+    useEffect(() => {
+        const token = jsCookie.get('token')
+        setIsLogged(!!token)
+    }, [])
 
     return (
         <AuthContext.Provider value={{ isLogged, setIsLogged, login, logout }}>

@@ -1,25 +1,14 @@
 import multer from 'multer'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { NextApiResponse } from 'next'
+import { IFileNextApiRequest } from '@/interfaces/IFile'
 
-interface FileNextApiRequest extends NextApiRequest {
-  file: {
-    fieldname: string
-    originalname: string
-    encoding: string
-    mimetype: string
-    destination: string
-    filename: string
-    path: string
-    size: number
-  }
-}
+const upload = multer({ dest: '/clientData/avatars', limits: { fileSize: 10 * 1024 * 1024 } })
 
-const upload = multer({ dest: 'clientdata/avatars', limits: { fileSize: 10 * 1024 * 1024 } })
-
-export default function handler(req: FileNextApiRequest, res: NextApiResponse) {
+export default function handler(req: IFileNextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     console.log(req.method)
     upload.single('avatar')(req as any, res as any, (err: any) => {
+
       if (err instanceof multer.MulterError) {
         console.error("[POST => 500] Ошибка Multer: ", err.message)
         return res.status(500).json({ message: 'Ошибка Multer при загрузке файла: ' + err.message })

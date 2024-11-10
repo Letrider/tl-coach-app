@@ -1,7 +1,7 @@
-import { Topic } from '@/interfaces/ITopic'
+import { ITopic } from '@/interfaces/ITopic'
 import { pool } from '@/utils/db'
 
-export async function saveTopicToDatabase(topicData: Topic): Promise<Topic> {
+export async function saveTopicToDatabase(topicData: ITopic): Promise<ITopic> {
 	const client = await pool.connect()
 	try {
 		const { title, description } = topicData

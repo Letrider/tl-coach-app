@@ -22,28 +22,28 @@ export async function query(text: string, params?: any[]) {
   const res = await pool.query(text, params)
   const duration = Date.now() - start
 
-  console.log('[PG]: Запрос выполнен', 
-    {  
-        text, 
-        duration, 
-        rows: res.rowCount 
+  console.log('[PostgreSQL]: Запрос выполнен',
+    {
+      text,
+      duration,
+      rows: res.rowCount
     }
   )
-    
+
   return res
-} 
+}
 
 export async function getUserFullName(userId: number): Promise<string | null> {
   try {
     const client = await pool.connect()
     const result = await client.query('SELECT name, lastname FROM users WHERE id = $1', [userId])
     client.release()
-    
+
     if (result.rows.length > 0) {
       const { first_name, last_name } = result.rows[0]
       return `${first_name} ${last_name}`
-    } 
-    
+    }
+
     else {
       return null
     }
@@ -136,5 +136,19 @@ export async function getUserTasks(email: string) {
   } catch (error) {
     console.error('Ошибка при получении заданий пользователя:', error)
     return null
+  }
+}
+
+export async function getUserById(userId: number) {
+  const client = await pool.connect()
+  try {
+    const result = await client.query('SELECT * FROM users WHERE id = $1', [userId])
+    if (result.rows.length === 0) {
+      return null // Если пользователь не найден
+    }
+    const { name, lastname, telephone, email } = result.rows[0]
+    return { name, lastname, telephone, email }
+  } finally {
+    client.release()
   }
 }

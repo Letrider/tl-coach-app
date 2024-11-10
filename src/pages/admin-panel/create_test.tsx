@@ -1,18 +1,18 @@
 // pages/create/create_lesson.tsx
 import CreateLessonForm from '@/components/CreateLessonForm/CreateLessonForm'
-import { Topic } from '@/interfaces/ITopic'
-import axios from 'axios'
+import { ITopic } from '@/interfaces/ITopic'
+import axios, { AxiosResponse } from 'axios'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
 const CreateLesson = () => {
   const router = useRouter()
   const { topicId } = router.query
-  const [topic, setTopic] = useState<Topic | null>(null)
+  const [topic, setTopic] = useState<ITopic | null>(null)
 
   useEffect(() => {
     if (topicId) {
-      axios.get(`/api/lesson?id=${topicId}`).then((response: any) => {
+      axios.get(`/api/lesson?id=${topicId}`).then((response: AxiosResponse<any, any>) => {
         setTopic(response.data)
         console.log(response.data)
       })
@@ -24,7 +24,7 @@ const CreateLesson = () => {
       const response = await axios.post('/api/lessons/create', lessonData)
       console.log(response, 'ответ в CreateLesson')
     } catch (error) {
-      // Обработка ошибки при создании урока
+      console.error('Не удалось создать урок:', error)
     }
   }
 

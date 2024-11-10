@@ -5,7 +5,7 @@ const nextConfig = {
       {
         source: "/",
         destination: "/home",
-        permanent: true,
+        permanent: false, // временный редирект
       }
     ]
   },
@@ -19,14 +19,17 @@ const nextConfig = {
             value: "true",
           },
           {
-            key: "Access-Control-Allow-Origin",
-            value: "*", // заменить на домен
+            key: "Access-Control-Allow-Methods",
+            value: "GET, POST, OPTIONS",
+          },
+          {
+            key: "Access-Control-Allow-Headers",
+            value: "Content-Type, Authorization",
           },
         ],
       },
     ]
   },
-
 }
 
 export default nextConfig

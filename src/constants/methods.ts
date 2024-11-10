@@ -3,4 +3,5 @@ export enum HttpStatus {
     Unauthorized = 401,
     InternalServerError = 500,
     Success = 200,
+    BadRequest = 400,
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import TopicSelector from '@/components/TopicSelector/TopicSelector'
-import { Topic } from '@/interfaces/ITopic'
+import { ITopic } from '@/interfaces/ITopic'
 import { motion } from 'framer-motion'
 import { NextPage } from 'next'
 import Link from 'next/link'
@@ -10,7 +10,7 @@ import { useState } from 'react'
 
 
 const AdminPanel: NextPage = () => {
-	const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null)
+	const [selectedTopic, setSelectedTopic] = useState<ITopic | null>(null)
 
 	return (
 		<div className='admin-panel-static'>

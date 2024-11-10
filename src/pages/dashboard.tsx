@@ -1,72 +1,63 @@
+import axios from 'axios'
+import { useState, useEffect } from 'react'
+import jsCookie from 'js-cookie'
 import UserDataUploader from "@/components/UserDataUploader/UserDataUploader"
-import axios from "axios"
-import { useRouter } from "next/router"
-import React, { useEffect, useState } from "react"
-import { parseCookies, destroyCookie } from "nookies"
-import Input from "@/components/UI/Input/input"
-import Link from "next/link"
 import { useAuth } from "@/providers/AuthContext"
+import Input from '@/components/UI/Input/input'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
-export default function Dashboard(): React.JSX.Element {
-    const { isLogged, setIsLogged } = useAuth()
-    const [userEmail, setUserEmail] = useState<string>("")
-    const [firstName, setFirstName] = useState<string>("")
-    const [lastName, setLastName] = useState<string>("")
-    const [telephone, setTelephone] = useState<string>("")
-    const [successMessage, setSuccessMessage] = useState<string>("")
+export default function Dashboard() {
+    const { isLogged, setIsLogged, logout } = useAuth()
+    const [userEmail, setUserEmail] = useState("Нет данных")
+    const [firstName, setFirstName] = useState("Нет ")
+    const [lastName, setLastName] = useState("данных")
+    const [telephone, setTelephone] = useState("Нет данных")
+    const [successMessage, setSuccessMessage] = useState("")
     const router = useRouter()
 
     useEffect(() => {
-        const cookies = parseCookies()
-        console.log('cookies', cookies)
-        const token = cookies.token
+        const token = jsCookie.get('token')
 
-        if (token) {
-            setIsLogged(true)
-            axios.get(`/api/user`, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-                .then(response => {
-                    const { email, firstName, lastName, telephone } = response.data
-                    setUserEmail(email)
-                    setFirstName(firstName || "Нет данных")
-                    setLastName(lastName || "Нет данных")
-                    setTelephone(telephone || "Не привязан")
-                })
-                .catch(error => {
-                    console.error("Ошибка загрузки данных пользователя:", error)
-                })
-        } else {
-            setIsLogged(false) // Если токен отсутствует, сбрасываем статус 
-            router.push("/signin") // Перенаправляем на страницу входа
+        if (!token) {
+            setIsLogged(false)
+            router.replace("/signin")
+            return
         }
+
+        axios.get('/api/user', { headers: { Authorization: `Bearer ${token}` } })
+            .then(response => {
+                const { email, firstName, lastName, telephone } = response.data
+                setUserEmail(email)
+                setFirstName(firstName || "Нет данных")
+                setLastName(lastName || "Нет данных")
+                setTelephone(telephone || "Нет данных")
+            })
+            .catch(() => {
+                jsCookie.remove("token")
+                setIsLogged(false)
+                router.replace("/signin")
+            })
     }, [router, setIsLogged])
 
+
     const handleUpdateButtonClick = () => {
-        if (userEmail) {
-            axios.put(`/api/user?email=${userEmail}`, {
-                firstName,
-                lastName,
-                telephone,
+        axios.put(`/api/user`, { firstName, lastName, telephone })
+            .then(response => {
+                const { firstName, lastName, telephone } = response.data
+                setFirstName(firstName || "Нет данных")
+                setLastName(lastName || "Нет данных")
+                setTelephone(telephone || "Нет данных")
+                setSuccessMessage("Данные успешно обновлены")
             })
-                .then(response => {
-                    const { firstName, lastName, telephone } = response.data
-                    setFirstName(firstName || "Не привязан")
-                    setLastName(lastName || "Не привязан")
-                    setTelephone(telephone || "Не привязан")
-                    setSuccessMessage("Данные успешно обновлены")
-                    router.reload()
-                })
-                .catch(error => {
-                    console.error("Ошибка загрузки данных пользователя:", error)
-                })
-        }
+            .catch(() => {
+                console.error("Ошибка обновления данных пользователя")
+            })
     }
 
     const handleExit = () => {
-        destroyCookie(null, "token")
-        setIsLogged(false) // Сбрасываем статус авторизации
-        router.reload() // Перезагружаем страницу
+        logout()
+        router.reload()
     }
 
     return (
@@ -77,7 +68,7 @@ export default function Dashboard(): React.JSX.Element {
                 ) : (
                     <>
                         <div className="account-info_header">
-                            <UserDataUploader isLogged={isLogged} />
+                            <UserDataUploader isLogged={isLogged} userFullname={`${firstName} ${lastName}`} />
                         </div>
                         <div className="account-info_main">
                             <div className="account-info_main-content">

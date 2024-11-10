@@ -1,12 +1,13 @@
 import axios from 'axios'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
+import { ILesson } from '@/interfaces/ILesson'
 import './lessons-theory.css'
 
-const LessonPage: React.FC = () => {
+const LessonPage: FC = () => {
     const router = useRouter()
     const { id } = router.query
-    const [lesson, setLesson] = useState<any[]>([])
+    const [lesson, setLesson] = useState<ILesson[]>([])
 
     useEffect(() => {
         if (id) {
@@ -27,10 +28,10 @@ const LessonPage: React.FC = () => {
 
     return (
         <div className="theory-lesson">
-            {lesson.map((lesson: any, index: number) => (
+            {lesson.map((lesson: ILesson, index: number) => (
                 <div key={index} className="lesson">
                     <h2>Урок {lesson.id}.</h2>
-                    <h3>{lesson.name}</h3>
+                    <h3>{lesson.title}</h3>
                     <p><strong>Цель урока:</strong></p>
                     <div className="content-lesson">
                         {lesson.description}

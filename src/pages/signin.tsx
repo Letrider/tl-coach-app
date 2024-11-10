@@ -1,13 +1,17 @@
 "use client"
+import { ChangeEvent, useEffect, useState } from "react"
+import axios from 'axios'
 import { useAuth } from "@/providers/AuthContext"
 import { useRouter } from "next/router"
-import { ChangeEvent, useEffect, useState } from "react"
 import Link from "next/link"
+
+// styles
 import "@/styles/main.css"
 import "@/styles/reset.css"
+
+// components
 import Button from "@/components/UI/Button/button"
 import Input from "@/components/UI/Input/input"
-import axios from 'axios'
 
 export default function Login(): React.JSX.Element {
     const { isLogged, login } = useAuth()
@@ -16,14 +20,13 @@ export default function Login(): React.JSX.Element {
     const [error, setError] = useState<string>("")
     const router = useRouter()
 
-    useEffect(() => {
-        if (isLogged) {
-            router.push("/dashboard")
-        }
-    }, [isLogged, router])
+    if (isLogged) {
+        router.push('/dashboard')
+    }
 
-    const handler = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+    const handler = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+
         if (!email || !password) {
             setError("Введите email и пароль")
             return
@@ -42,7 +45,7 @@ export default function Login(): React.JSX.Element {
                 const { token } = response.data
 
                 login(token)
-                router.push("/dashboard")
+                router.replace("/dashboard")
             } else {
                 throw new Error("Ошибка при авторизации")
             }
@@ -74,7 +77,7 @@ export default function Login(): React.JSX.Element {
                             required
                         >Пароль</Input>
                     </div>
-                    {error && <p style={{ color: "red" }}>{error}</p>}
+                    {error && <p style={{ color: "red", marginTop: 0 }}>{error}</p>}
                     <Button type="submit">Войти</Button>
                     <h1>Нет аккаунта? <Link href="/signup">Зарегистрироваться</Link></h1>
                 </div>

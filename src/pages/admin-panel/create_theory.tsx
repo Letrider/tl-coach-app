@@ -1,9 +1,9 @@
-import { Topic } from '@/interfaces/ITopic' // Предположим, что у вас есть интерфейс для темы
+import { ITopic } from '@/interfaces/ITopic' // Предположим, что у вас есть интерфейс для темы
 import axios from 'axios'
 import React, { useState } from 'react'
 
 interface CreateTheoryProps {
-	selectedTopic: Topic | null // Передаем выбранную тему в компонент
+	selectedTopic: ITopic | null // Передаем выбранную тему в компонент
 }
 
 const CreateTheory: React.FC<CreateTheoryProps> = ({ selectedTopic }) => {
@@ -21,12 +21,9 @@ const CreateTheory: React.FC<CreateTheoryProps> = ({ selectedTopic }) => {
 				topicId: selectedTopic.id,
 				content: theoryContent.trim(),
 			})
-
-			// Обработка успешного ответа, например, обновление интерфейса или вывод сообщения об успехе
 			console.log('Теория успешно создана:', response.data)
 		} catch (error) {
 			console.error('Ошибка при создании теории:', error)
-			// Обработка ошибки, например, вывод сообщения об ошибке
 			alert('Ошибка при создании теории. Пожалуйста, попробуйте еще раз.')
 		}
 	}
