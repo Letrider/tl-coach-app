@@ -1,3 +1,4 @@
+import { HttpStatus } from '@/constants/methods'
 import { query } from "@/utils/db"
 import { NextApiRequest, NextApiResponse } from "next"
 
@@ -20,12 +21,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             `
             await query(insertQuery, [`Тест результат`, `Результаты теста: ${score}`, '2024-04-26 23:59:59', userEmail, results])
 
-            res.status(200).json({ message: 'Результаты теста успешно сохранены в базе данных' })
+            res.status(HttpStatus.Success).json({ message: 'Результаты теста успешно сохранены в базе данных' })
         } catch (error) {
             console.error('Ошибка при сохранении результатов теста:', error)
-            res.status(500).json({ message: 'Ошибка при сохранении результатов теста' })
+            res.status(HttpStatus.InternalServerError).json({ message: 'Ошибка при сохранении результатов теста' })
         }
     } else {
-        res.status(405).end()
+        res.status(HttpStatus.MethodNotAllowed).end()
     }
 }

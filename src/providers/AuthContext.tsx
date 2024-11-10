@@ -7,7 +7,7 @@ import {
 interface AuthContextType {
     isLogged: boolean
     setIsLogged: React.Dispatch<React.SetStateAction<boolean>>
-    login: (token: string) => void
+    login: () => void
     logout: () => void
 }
 

@@ -1,3 +1,4 @@
+import { HttpStatus } from '@/constants/methods'
 import { query } from '@/utils/db'
 import { NextApiRequest, NextApiResponse } from 'next'
 
@@ -8,22 +9,22 @@ export default async function getLessons(req: NextApiRequest, res: NextApiRespon
 			console.log('Received ID:', id)
 
 			if (!id) {
-				return res.status(400).json({ error: 'Не указан ID темы' })
+				return res.status(HttpStatus.BadRequest).json({ error: 'Не указан ID темы' })
 			}
 
 			const getLessonsQuery = `SELECT * FROM lessons WHERE topicId = $1`
 			const lessons = await query(getLessonsQuery, [id])
 
 			if (lessons.rows.length === 0) {
-				return res.status(404).json({ error: 'Уроков нет для указанной темы' })
+				return res.status(HttpStatus.NotFound).json({ error: 'Уроков нет для указанной темы' })
 			}
 
-			res.status(200).json(lessons.rows)
+			res.status(HttpStatus.Success).json(lessons.rows)
 		} catch (error) {
 			console.error('Ошибка при запросе уроков:', error)
-			res.status(500).json({ error: "Ошибка сервера при запросе уроков" })
+			res.status(HttpStatus.InternalServerError).json({ error: "Ошибка сервера при запросе уроков" })
 		}
 	} else {
-		res.status(405).end()
+		res.status(HttpStatus.MethodNotAllowed).end()
 	}
 }

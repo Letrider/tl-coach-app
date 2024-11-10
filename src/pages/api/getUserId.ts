@@ -1,3 +1,4 @@
+import { HttpStatus } from '@/constants/methods'
 import { query } from "@/utils/db" // Подключаем функцию query из вашего файла db.ts
 import { NextApiRequest, NextApiResponse } from "next"
 
@@ -8,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             console.log(email)
 
             if (!email || typeof email !== 'string') {
-                return res.status(400).json({ error: "Не указан email пользователя" })
+                return res.status(HttpStatus.BadRequest).json({ error: "Не указан email пользователя" })
             }
 
             const selectQuery = `
@@ -17,18 +18,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const result = await query(selectQuery, [email])
 
             if (result.rows.length === 0) {
-                return res.status(404).json({ error: "Пользователь с указанным email не найден" })
+                return res.status(HttpStatus.NotFound).json({ error: "Пользователь с указанным email не найден" })
             }
 
             const userEmail = result.rows[0].email
             console.log(result.rows, "result.rows")
             console.log(userEmail)
-            res.status(200).json({ userEmail })
+            res.status(HttpStatus.Success).json({ userEmail })
         } catch (error) {
             console.error("Ошибка при получении ID пользователя:", error)
-            res.status(500).json({ error: "Ошибка сервера" })
+            res.status(HttpStatus.InternalServerError).json({ error: "Ошибка сервера" })
         }
     } else {
-        res.status(405).end()
+        res.status(HttpStatus.MethodNotAllowed).end()
     }
 }

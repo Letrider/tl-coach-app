@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { verify, JwtPayload } from 'jsonwebtoken'
 import { getUserById } from "@/utils/db"
 import cookie from 'cookie'
+import { HttpStatus } from '@/constants/methods'
 
 export default async function user(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'GET') {
@@ -10,7 +11,7 @@ export default async function user(req: NextApiRequest, res: NextApiResponse) {
         const token = cookies.token
 
         if (!token) {
-            return res.status(401).json({ error: 'Токен аутентификации не был найден' })
+            return res.status(HttpStatus.Unauthorized).json({ error: 'Токен аутентификации не был найден' })
         }
 
         try {
@@ -18,12 +19,12 @@ export default async function user(req: NextApiRequest, res: NextApiResponse) {
             const userId = decoded.userId
 
             if (!userId) {
-                return res.status(401).json({ error: 'Невалидный токен' })
+                return res.status(HttpStatus.Unauthorized).json({ error: 'Невалидный токен' })
             }
 
             const user = await getUserById(userId)
             if (user) {
-                res.status(200).json({
+                res.status(HttpStatus.Success).json({
                     firstName: user.name,
                     lastName: user.lastname,
                     telephone: user.telephone,
@@ -31,14 +32,14 @@ export default async function user(req: NextApiRequest, res: NextApiResponse) {
                     token
                 })
             } else {
-                res.status(404).json({ error: 'Пользователь не был найден' })
+                res.status(HttpStatus.NotFound).json({ error: 'Пользователь не был найден' })
             }
         } catch (error) {
             console.error('Ошибка верификации токена:', error)
-            res.status(401).json({ error: 'Невалидный токен' })
+            res.status(HttpStatus.Unauthorized).json({ error: 'Невалидный токен' })
         }
     } else {
         res.setHeader('Allow', ['GET'])
-        res.status(405).end(`Method ${req.method} not allowed`)
+        res.status(HttpStatus.MethodNotAllowed).end(`Method ${req.method} not allowed`)
     }
 }

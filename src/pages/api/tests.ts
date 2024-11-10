@@ -1,3 +1,4 @@
+import { HttpStatus } from '@/constants/methods'
 import { query } from '@/utils/db'
 import { NextApiRequest, NextApiResponse } from 'next'
 
@@ -18,12 +19,12 @@ export default async function getLessons(req: NextApiRequest, res: NextApiRespon
 				return res.status(404).json({ error: 'Тестов нет для указанной темы' })
 			}
 
-			res.status(200).json(tests.rows)
+			res.status(HttpStatus.Success).json(tests.rows)
 		} catch (error) {
 			console.error('Ошибка при запросе уроков:', error)
-			res.status(500).json({ error: "Ошибка сервера при запросе уроков" })
+			res.status(HttpStatus.InternalServerError).json({ error: "Ошибка сервера при запросе уроков" })
 		}
 	} else {
-		res.status(405).end()
+		res.status(HttpStatus.MethodNotAllowed).end()
 	}
 }

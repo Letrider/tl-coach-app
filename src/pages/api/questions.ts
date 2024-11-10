@@ -1,3 +1,4 @@
+import { HttpStatus } from '@/constants/methods'
 import { pool } from '@/utils/db'
 import { NextApiRequest, NextApiResponse } from 'next'
 
@@ -7,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			const { testid } = req.query
 
 			if (!testid) {
-				return res.status(400).json({ message: 'Не указан идентификатор теста' })
+				return res.status(HttpStatus.BadRequest).json({ message: 'Не указан идентификатор теста' })
 			}
 
 			const questions = await pool.query('SELECT * FROM questions WHERE testid = $1', [testid] as any)
@@ -22,13 +23,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 				],
 			}))
 
-			res.status(200).json(formattedQuestions)
+			res.status(HttpStatus.Success).json(formattedQuestions)
 		} catch (error) {
 			console.error('Ошибка при загрузке вопросов и вариантов ответов:', error)
-			res.status(500).json({ message: 'Ошибка при загрузке вопросов и вариантов ответов' })
+			res.status(HttpStatus.InternalServerError).json({ message: 'Ошибка при загрузке вопросов и вариантов ответов' })
 		}
 	} else {
-		res.status(405).json({ message: 'Метод не поддерживается' })
+		res.status(HttpStatus.MethodNotAllowed).json({ message: 'Метод не поддерживается' })
 	}
 }
 

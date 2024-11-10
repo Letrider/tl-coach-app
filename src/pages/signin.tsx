@@ -44,7 +44,7 @@ export default function Login(): React.JSX.Element {
             if (response.status === 200) {
                 const { token } = response.data
 
-                login(token)
+                login()
                 router.replace("/dashboard")
             } else {
                 throw new Error("Ошибка при авторизации")

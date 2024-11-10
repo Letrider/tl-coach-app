@@ -1,3 +1,4 @@
+import { HttpStatus } from '@/constants/methods'
 import { pool } from '@/utils/db'
 import { NextApiRequest, NextApiResponse } from 'next'
 
@@ -23,12 +24,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 			await Promise.all(questionPromises)
 
-			res.status(200).json({ message: 'Тест успешно создан' })
+			res.status(HttpStatus.Success).json({ message: 'Тест успешно создан' })
 		} catch (error) {
 			console.error('Ошибка при создании теста:', error)
-			res.status(500).json({ message: 'Ошибка при создании теста' })
+			res.status(HttpStatus.InternalServerError).json({ message: 'Ошибка при создании теста' })
 		}
 	} else {
-		res.status(405).json({ message: 'Метод не поддерживается' })
+		res.status(HttpStatus.MethodNotAllowed).json({ message: 'Метод не поддерживается' })
 	}
 }

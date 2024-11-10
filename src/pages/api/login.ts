@@ -37,7 +37,7 @@ export default async function loginHandler(req: NextApiRequest, res: NextApiResp
 
     res.setHeader('Set-Cookie', `token=${token}; Path=/;`)
 
-    return res.status(HttpStatus.Success).json({ message: 'Авторизация успешна', token })
+    return res.status(HttpStatus.Success).json({ message: 'Авторизация успешна' })
 
   } catch (error) {
     console.error("Ошибка на сервере:", error)

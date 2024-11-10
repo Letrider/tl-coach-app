@@ -1,3 +1,4 @@
+import { HttpStatus } from '@/constants/methods'
 import { getUserTasks } from '@/utils/db'
 import { NextApiRequest, NextApiResponse } from 'next'
 
@@ -5,10 +6,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { email } = req.query
 
     if (email === 'undefined') {
-        return res.status(500).json({ error: "ID undefined" })
+        return res.status(HttpStatus.InternalServerError).json({ error: "ID undefined" })
     }
     if (!email || typeof email !== 'string') {
-        return res.status(400).json({ error: "Не указан ID пользователя" })
+        return res.status(HttpStatus.BadRequest).json({ error: "Не указан ID пользователя" })
     }
 
     try {
@@ -25,6 +26,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.json(taskStatistics)
     } catch (error) {
         console.error("Ошибка при получении данных из базы данных:", error)
-        res.status(500).json({ error: "Ошибка при получении данных из базы данных" })
+        res.status(HttpStatus.InternalServerError).json({ error: "Ошибка при получении данных из базы данных" })
     }
 }
